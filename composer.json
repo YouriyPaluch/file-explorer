@@ -1,9 +1,6 @@
 {
     "name": "youriy-paluch/file-explorer",
     "description": "PHP File Explorer library",
-    "require": {
-        "php": ">=8.5"
-    },
     "autoload": {
         "psr-4": {
             "YouriyPaluch\\FileExplorer\\": "src/"
