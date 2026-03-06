@@ -1,5 +1,5 @@
 {
-    "name": "YouriyPaluch/file-explorer",
+    "name": "youriy-paluch/file-explorer",
     "description": "PHP File Explorer library",
     "require": {
         "php": ">=8.5"
