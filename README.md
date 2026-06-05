@@ -12,3 +12,5 @@ PROJECT_ROOT . '/logs',
 ['.gitignore', '.keep', '.gitkeep'],
 ))->showContent();
 ```
+
+![img.png](img.png)
