@@ -1,6 +1,7 @@
 {
     "name": "youriy-paluch/file-explorer",
     "description": "PHP File Explorer library",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "YouriyPaluch\\FileExplorer\\": "src/"
