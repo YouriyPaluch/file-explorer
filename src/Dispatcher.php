@@ -111,9 +111,9 @@ class Dispatcher
 				&& !in_array($this->_documentEntity->getExtension(), $this->_excludeFileList)
 				&& (!$this->_allowedExtensions || in_array($this->_documentEntity->getExtension(), $this->_allowedExtensions))) {
 				if($this->_getParam('download', 0)) {
-					return $this->_documentEntity->download();
+					$this->_documentEntity->download();
 				}
-				return $this->_documentEntity->getContent();
+				$this->_documentEntity->getContent();
 			} else {
 				throw new Exception('Content of this file disabled to show');
 			}

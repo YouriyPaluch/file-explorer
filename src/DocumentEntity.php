@@ -1,6 +1,7 @@
 <?php
 
 namespace YouriyPaluch\FileExplorer;
+
 class DocumentEntity
 {
 	const TYPE_DIR = 'dir';
@@ -65,6 +66,10 @@ class DocumentEntity
 			return '-';
 		}
 
+		if (!file_exists($this->_fullPath)) {
+			return '0 B';
+		}
+
 		$bytes = filesize($this->_fullPath);
 		$units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
@@ -90,10 +95,11 @@ class DocumentEntity
 	/**
 	 * @throws DocumentEntityException
 	 */
-	public function getContent(): int
+	public function getContent(): void
 	{
 		header('Content-Disposition: inline; filename="' . basename($this->_fullPath) . '"');
-		return $this->_getContent();
+		$this->_getContent();
+		exit();
 	}
 
 	public function isDir(): bool
@@ -111,20 +117,28 @@ class DocumentEntity
 		return pathinfo($this->_fullPath, PATHINFO_EXTENSION);
 	}
 
-	public function download(): string
+	/**
+	 * @throws DocumentEntityException
+	 */
+	public function download(): void
 	{
 		header('Content-Disposition: attachment; filename="' . basename($this->_fullPath) . '"');
-		return $this->_getContent();
+		$this->_getContent();
+		exit();
 	}
 
-	private function _getContent(): string
+	/**
+	 * @throws DocumentEntityException
+	 */
+	private function _getContent(): void
 	{
 		if (!$this->isFile() || !is_readable($this->_fullPath)) {
 			throw new DocumentEntityException('File not found or access denied.');
 		}
 
 		$fileSize = filesize($this->_fullPath);
-		header('Content-Type: text/plain; charset=utf-8');
+		$mimeType = mime_content_type($this->_fullPath);
+		header('Content-Type: ' . ($mimeType ?: 'application/octet-stream'));
 
 		if ($fileSize !== false) {
 			header('Content-Length: ' . $fileSize);
@@ -133,6 +147,6 @@ class DocumentEntity
 		if (ob_get_level()) {
 			ob_end_clean();
 		}
-		return readfile($this->_fullPath);
+		readfile($this->_fullPath);
 	}
 }
