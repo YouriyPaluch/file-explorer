@@ -127,11 +127,7 @@ class Dispatcher
 	 */
 	protected function _getFileListForPage(): array
 	{
-		if ($this->_getParam('use-ls', 0) && empty($this->_additionalQueryParams['search'])) {
-			$command = $this->_getCommandReserved();
-		} else {
-			$command = $this->_getCommand();
-		}
+		$command = $this->_getCommand();
 
 		// Відкриваємо потік
 		$handle = popen($command, 'r');
