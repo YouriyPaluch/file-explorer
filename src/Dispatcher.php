@@ -305,66 +305,6 @@ class Dispatcher
 		return $_GET[$paramName] ?? $defaultValue;
 	}
 
-	protected function _getCommandReserved(): string
-	{
-		// ls: вивести вмісту папки
-		// -1: виводити файли по одному файлу на рядок
-		// a: вивести всі файли, включаючи приховані
-		// S: сортування за розміром
-		// t: сортування по часу створення
-		// r: реверс сортування
-		// --group-directories-first: (реверсу нема) показати спочатку папки
-		$command = 'ls ';
-		$flags = '-1a';
-		switch ($this->_sort) {
-			case self::SORT_BY_MODIFIED:
-				$flags .= 't';
-				break;
-			case self::SORT_BY_SIZE:
-				$flags .= 'S';
-				break;
-			default:
-		}
-
-		// для правильного сортування по даті модифікації і розміру потрібно прапор r ставити при ASC
-		if (($this->_order === self::SORT_DESC && $this->_sort === self::SORT_BY_NAME)
-			|| ($this->_order === self::SORT_ASC && $this->_sort !== self::SORT_BY_NAME)
-		) {
-			$flags .= 'r';
-		}
-
-		// приклад команди
-		// ls -1a --group-directories-first '/var/www/platinumlist/data/logs' | grep -vE '^(\.|\.\.|\.gitignore|\.keep|\.gitkeep)$|\\(\.txt|\.log)$'
-		// де
-		// ^(\.|\.\.|\.gitignore|\.keep|\.gitkeep)$' - перелік елементів, які треба виключити з пошуку, має включати повне ім'я включно з розширенням
-		// \\(\.txt|\.log)$ - перелік розширень файлів які треба вивести, при цьому папки теж виводяться.
-		$grepArs = '';
-		if ($this->_excludeFileList) {
-			$grepArs = ' | grep -vE \'^(';
-			for ($i = 0; $i < count($this->_excludeFileList) - 1; $i++) {
-				$grepArs .= str_replace('.', '\.', $this->_excludeFileList[$i]) . '|';
-			}
-			$grepArs .= str_replace('.', '\.', array_last($this->_excludeFileList)) . ')$';
-		}
-
-		if ($this->_allowedExtensions) {
-			if (empty($grepArs)) {
-				$grepArs = ' | grep -vE \\\\\'(';
-			} else {
-				$grepArs .= '|\\\\(';
-			}
-			for ($i = 0; $i < count($this->_allowedExtensions) - 1; $i++) {
-				$grepArs .= '\.' . $this->_allowedExtensions[$i] . '|';
-			}
-			$grepArs .= '\.' . array_last($this->_allowedExtensions) . ')$\'';
-		} else {
-			$grepArs .= '\'';
-		}
-
-		$command .= $flags . ' --group-directories-first ' . escapeshellarg($this->_fullPath) . $grepArs;
-		return $command;
-	}
-
 	protected function _getCommand(): string
 	{
 		// find: рекурсивний пошук від вказаного шляху
